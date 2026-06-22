@@ -1940,3 +1940,77 @@ a {
 .tier-pill.not-tested img {
   filter: none;
 }
+/* SAFE TESTED TIER BROWN/GOLD GLOW */
+.tier-pill.tested {
+  border-color: rgba(255, 215, 0, 0.22);
+  background:
+    radial-gradient(circle at 50% 15%, rgba(255, 215, 0, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(57, 36, 12, 0.94), rgba(10, 20, 36, 0.96));
+}
+
+.tier-pill.tested img {
+  filter:
+    brightness(1.12)
+    drop-shadow(0 0 6px rgba(255, 215, 0, 0.25));
+}
+
+.tier-pill.tested span {
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.34), rgba(105, 67, 18, 0.75));
+  color: #ffe38a;
+}
+
+/* Tier brightness */
+.tier-pill.tested.tier-5 {
+  box-shadow: inset 0 0 12px rgba(150, 82, 23, 0.08);
+}
+
+.tier-pill.tested.tier-4 {
+  box-shadow: inset 0 0 15px rgba(180, 105, 30, 0.1);
+}
+
+.tier-pill.tested.tier-3 {
+  box-shadow:
+    inset 0 0 18px rgba(213, 139, 42, 0.12),
+    0 0 10px rgba(213, 139, 42, 0.08);
+}
+
+.tier-pill.tested.tier-2 {
+  box-shadow:
+    inset 0 0 20px rgba(255, 191, 61, 0.14),
+    0 0 14px rgba(255, 191, 61, 0.1);
+}
+
+.tier-pill.tested.tier-1 {
+  border-color: rgba(255, 215, 0, 0.42);
+  background:
+    radial-gradient(circle at 50% 15%, rgba(255, 215, 0, 0.34), transparent 42%),
+    linear-gradient(180deg, rgba(95, 70, 11, 0.98), rgba(12, 23, 38, 0.96));
+  box-shadow:
+    inset 0 0 24px rgba(255, 215, 0, 0.18),
+    0 0 18px rgba(255, 215, 0, 0.15);
+}
+
+/* HT brighter than LT */
+.tier-pill.ht.tested span {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.55), rgba(146, 83, 17, 0.82));
+  color: #ffe66d;
+}
+
+.tier-pill.lt.tested span {
+  background: linear-gradient(180deg, rgba(174, 113, 43, 0.42), rgba(74, 52, 33, 0.78));
+  color: #e8c99b;
+}
+
+/* NT stays normal grey */
+.tier-pill.nt,
+.tier-pill.not-tested {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 21, 38, 0.92);
+  box-shadow: none;
+}
+
+.tier-pill.nt img,
+.tier-pill.not-tested img {
+  filter: none;
+}
