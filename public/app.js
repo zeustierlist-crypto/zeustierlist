@@ -176,11 +176,11 @@ function makeTierPill(rank) {
   const tier = isNotTested ? 'NT' : rawTier;
 
   const kind = isNotTested ? 'nt' : isHT(tier) ? 'ht' : 'lt';
-  const levelClass = isNotTested ? 'not-tested' : `tested t${tierNumber(tier)}`;
+  const level = isNotTested ? 'not-tested' : `tested tier-${tierNumber(tier)}`;
   const label = isNotTested ? 'NT' : tier;
 
   return `
-    <div class="tier-pill ${kind} ${levelClass}">
+    <div class="tier-pill ${kind} ${level}">
       <img src="${modeIcon(gm)}" alt="${escapeHtml(gm)}" />
       <span>${escapeHtml(label)}</span>
     </div>
