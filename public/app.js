@@ -169,23 +169,11 @@ function fullRanks(player) {
 }
 
 function makeTierPill(rank) {
-  const rawTier = String(rank.tier || 'NT').toUpperCase();
+  const tier = String(rank.tier || 'NT').toUpperCase();
   const gm = rank.gamemode;
+  const kind = tier === 'NT' ? 'nt' : isHT(tier) ? 'ht' : 'lt';
+  const label = tier === 'NT' ? 'NT' : tier;
 
-  const isNotTested = rawTier === 'NT' || rawTier === 'N/A' || rawTier === 'NA';
-  const tier = isNotTested ? 'NT' : rawTier;
-
-  const kind = isNotTested ? 'nt' : isHT(tier) ? 'ht' : 'lt';
-  const level = isNotTested ? 'not-tested' : `tested tier-${tierNumber(tier)}`;
-  const label = isNotTested ? 'NT' : tier;
-
-  return `
-    <div class="tier-pill ${kind} ${level}">
-      <img src="${modeIcon(gm)}" alt="${escapeHtml(gm)}" />
-      <span>${escapeHtml(label)}</span>
-    </div>
-  `;
-}
   return `
     <div class="tier-pill ${kind}">
       <img src="${modeIcon(gm)}" alt="${escapeHtml(gm)}" />
