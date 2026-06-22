@@ -108,7 +108,10 @@ async function connectMongo() {
       const db = mongoClient.db(DB_NAME);
       tierlistCollection = db.collection(COLLECTION_NAME);
 
-      await tierlistCollection.createIndex({ ignLower: 1, gamemode: 1 });
+      await tierlistCollection.createIndex(
+  { ignLower: 1, gamemode: 1 },
+  { unique: true, name: 'ignLower_1_gamemode_1' }
+);
 
       connectionState.connected = true;
       connectionState.error = null;
