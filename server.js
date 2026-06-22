@@ -8,6 +8,7 @@ const app = express();
 
 const PORT = Number(process.env.PORT || 3000);
 const DB_NAME = process.env.MONGODB_DB || 'zeuspvp';
+const COLLECTION_NAME = process.env.MONGODB_COLLECTION || 'tierlist';
 const DISCORD_URL = process.env.DISCORD_URL || 'https://discord.gg/zeuspvp';
 const SERVER_IP = process.env.SERVER_IP || 'zeuspvp.net';
 
@@ -37,22 +38,9 @@ const GAMEMODES = {
   smp: { name: 'SMP', icon: '/assets/icons/smp.svg' },
 };
 
-const DEMO_ENTRIES = [
-  { ign: 'ZeusKing', ignLower: 'zeusking', gamemode: 'nethpot', gamemodeName: 'NethPot', tier: 'HT1', region: 'AS', points: 60 },
-  { ign: 'ZeusKing', ignLower: 'zeusking', gamemode: 'axe', gamemodeName: 'Axe', tier: 'LT1', region: 'AS', points: 50 },
-  { ign: 'ZeusKing', ignLower: 'zeusking', gamemode: 'mace', gamemodeName: 'Mace', tier: 'HT2', region: 'AS', points: 40 },
-  { ign: 'StormBlade', ignLower: 'stormblade', gamemode: 'uhc', gamemodeName: 'UHC', tier: 'HT2', region: 'EU', points: 40 },
-  { ign: 'StormBlade', ignLower: 'stormblade', gamemode: 'smp', gamemodeName: 'SMP', tier: 'LT2', region: 'EU', points: 30 },
-  { ign: 'CrystalZap', ignLower: 'crystalzap', gamemode: 'crystal', gamemodeName: 'Crystal', tier: 'HT3', region: 'NA', points: 20 },
-  { ign: 'AxePulse', ignLower: 'axepulse', gamemode: 'axe', gamemodeName: 'Axe', tier: 'LT3', region: 'AS', points: 10 },
-  { ign: 'MaceBolt', ignLower: 'macebolt', gamemode: 'mace', gamemodeName: 'Mace', tier: 'HT4', region: 'OCE', points: 6 },
-  { ign: 'PotRush', ignLower: 'potrush', gamemode: 'nethpot', gamemodeName: 'NethPot', tier: 'LT4', region: 'NA', points: 4 },
-  { ign: 'SmpNova', ignLower: 'smpnova', gamemode: 'smp', gamemodeName: 'SMP', tier: 'HT5', region: 'EU', points: 2 },
-  { ign: 'UhcFlame', ignLower: 'uhcflame', gamemode: 'uhc', gamemodeName: 'UHC', tier: 'LT5', region: 'AS', points: 1 },
-];
-
 let mongoClient = null;
 let tierlistCollection = null;
+let mongoConnectPromise = null;
 
 const connectionState = {
   connected: false,
@@ -70,34 +58,28 @@ function tierNumber(tier) {
 
 function tierKind(tier) {
   const clean = String(tier || '').trim().toUpperCase();
-
   if (clean.startsWith('HT')) return 'HT';
   if (clean.startsWith('LT')) return 'LT';
-
   return 'NA';
 }
 
 function rankTitle(points) {
   const p = Number(points || 0);
-
   if (p >= 220) return 'Combat Grandmaster';
   if (p >= 160) return 'Combat Master';
   if (p >= 100) return 'Combat Specialist';
   if (p >= 40) return 'Knight';
   if (p >= 1) return 'Rookie';
-
   return 'Unranked';
 }
 
 function rankIcon(points) {
   const title = rankTitle(points);
-
   if (title === 'Combat Grandmaster') return '/assets/ranks/combat-grandmaster.webp';
   if (title === 'Combat Master') return '/assets/ranks/combat-master.webp';
   if (title === 'Combat Specialist') return '/assets/ranks/combat-specialist.svg';
   if (title === 'Knight') return '/assets/ranks/knight.svg';
   if (title === 'Rookie') return '/assets/ranks/rookie.svg';
-
   return '/assets/icons/overall.svg';
 }
 
@@ -105,11 +87,50 @@ function skinUrl(ign) {
   return `https://render.crafty.gg/3d/bust/${encodeURIComponent(String(ign || 'Steve'))}`;
 }
 
+async function connectMongo() {
+  if (tierlistCollection) return true;
+
+  if (!process.env.MONGODB_URI) {
+    connectionState.connected = false;
+    connectionState.error = 'MONGODB_URI missing.';
+    return false;
+  }
+
+  if (!mongoConnectPromise) {
+    mongoConnectPromise = (async () => {
+      mongoClient = new MongoClient(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000,
+        connectTimeoutMS: 10000,
+      });
+
+      await mongoClient.connect();
+
+      const db = mongoClient.db(DB_NAME);
+      tierlistCollection = db.collection(COLLECTION_NAME);
+
+      await tierlistCollection.createIndex({ ignLower: 1, gamemode: 1 });
+
+      connectionState.connected = true;
+      connectionState.error = null;
+
+      return true;
+    })().catch((error) => {
+      connectionState.connected = false;
+      connectionState.error = error.message;
+      tierlistCollection = null;
+      mongoClient = null;
+      mongoConnectPromise = null;
+      return false;
+    });
+  }
+
+  return mongoConnectPromise;
+}
+
 function cleanEntry(entry) {
   const gamemode = String(entry.gamemode || '').toLowerCase();
   const tier = String(entry.tier || entry.tierEarned || entry.tier_earned || 'N/A').toUpperCase();
   const ign = String(entry.ign || entry.name || entry.username || 'Unknown');
-
   const points = Number(entry.points ?? tierToPoints(tier));
 
   return {
@@ -128,13 +149,11 @@ function cleanEntry(entry) {
 }
 
 async function getEntries() {
+  await connectMongo();
+
   if (tierlistCollection) {
     const docs = await tierlistCollection.find({}).toArray();
     return docs.map(cleanEntry);
-  }
-
-  if (String(process.env.USE_DEMO_DATA).toLowerCase() === 'true') {
-    return DEMO_ENTRIES.map(cleanEntry);
   }
 
   return [];
@@ -184,14 +203,31 @@ function withPositions(players) {
   }));
 }
 
+app.set('etag', false);
 app.use(express.json());
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    res.set('Surrogate-Control', 'no-store');
+  }
+
+  next();
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/status', (_req, res) => {
+app.get('/api/status', async (_req, res) => {
+  await connectMongo();
+
   res.json({
     ok: true,
     connected: connectionState.connected,
     error: connectionState.error,
+    dbName: DB_NAME,
+    collection: COLLECTION_NAME,
     discordUrl: DISCORD_URL,
     serverIp: SERVER_IP,
     gamemodes: GAMEMODES,
@@ -276,7 +312,6 @@ app.get('/api/search', async (req, res) => {
       .sort((a, b) => {
         const exactA = a.ignLower === q ? 1 : 0;
         const exactB = b.ignLower === q ? 1 : 0;
-
         return exactB - exactA || b.totalPoints - a.totalPoints;
       })
       .slice(0, 8);
@@ -304,43 +339,10 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-async function start() {
-  if (process.env.MONGODB_URI) {
-    try {
-      mongoClient = new MongoClient(process.env.MONGODB_URI);
-      await mongoClient.connect();
-
-      const db = mongoClient.db(DB_NAME);
-      tierlistCollection = db.collection('tierlist');
-
-      await tierlistCollection.createIndex({ ignLower: 1, gamemode: 1 });
-
-      connectionState.connected = true;
-      connectionState.error = null;
-
-      console.log(`Connected to MongoDB database: ${DB_NAME}`);
-    } catch (error) {
-      connectionState.connected = false;
-      connectionState.error = error.message;
-
-      console.error('MongoDB connection failed:', error.message);
-    }
-  } else {
-    connectionState.connected = false;
-    connectionState.error = 'MONGODB_URI missing. Set USE_DEMO_DATA=true for preview data.';
-
-    console.warn(connectionState.error);
-  }
-}
-
 if (require.main === module) {
-  start().then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
-} else {
-  start();
 }
 
 process.on('SIGINT', async () => {
