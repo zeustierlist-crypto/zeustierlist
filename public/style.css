@@ -1840,3 +1840,103 @@ a {
   font-size: 12px;
   line-height: 1.1;
 }
+/* TESTED TIER BROWN → GOLD BRIGHTNESS */
+.tier-pill.tested {
+  border: 1px solid rgba(255, 215, 0, 0.22);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 215, 0, 0.16), transparent 36%),
+    linear-gradient(180deg, rgba(63, 42, 15, 0.92), rgba(13, 22, 37, 0.94));
+  box-shadow:
+    inset 0 0 18px rgba(255, 215, 0, 0.05),
+    0 0 0 rgba(255, 215, 0, 0);
+}
+
+.tier-pill.tested img {
+  filter:
+    drop-shadow(0 0 7px rgba(255, 215, 0, 0.25))
+    brightness(1.08);
+}
+
+.tier-pill.tested span {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.35), rgba(126, 72, 18, 0.72));
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  color: #ffe68a;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+
+/* Tier 5 = lowest glow */
+.tier-pill.tested.t5 {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(142, 78, 25, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(52, 31, 14, 0.92), rgba(12, 20, 35, 0.94));
+  box-shadow: inset 0 0 16px rgba(142, 78, 25, 0.07);
+}
+
+/* Tier 4 */
+.tier-pill.tested.t4 {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(178, 102, 31, 0.2), transparent 38%),
+    linear-gradient(180deg, rgba(66, 38, 14, 0.94), rgba(12, 20, 35, 0.94));
+  box-shadow: inset 0 0 18px rgba(178, 102, 31, 0.09);
+}
+
+/* Tier 3 */
+.tier-pill.tested.t3 {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(213, 139, 42, 0.24), transparent 38%),
+    linear-gradient(180deg, rgba(78, 49, 14, 0.95), rgba(13, 22, 37, 0.94));
+  box-shadow:
+    inset 0 0 20px rgba(213, 139, 42, 0.11),
+    0 0 13px rgba(213, 139, 42, 0.08);
+}
+
+/* Tier 2 */
+.tier-pill.tested.t2 {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 191, 61, 0.29), transparent 38%),
+    linear-gradient(180deg, rgba(86, 62, 14, 0.96), rgba(14, 24, 39, 0.94));
+  box-shadow:
+    inset 0 0 22px rgba(255, 191, 61, 0.13),
+    0 0 16px rgba(255, 191, 61, 0.11);
+}
+
+/* Tier 1 = brightest gold */
+.tier-pill.tested.t1 {
+  border-color: rgba(255, 215, 0, 0.42);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 215, 0, 0.38), transparent 40%),
+    linear-gradient(180deg, rgba(105, 78, 10, 0.98), rgba(17, 27, 41, 0.95));
+  box-shadow:
+    inset 0 0 26px rgba(255, 215, 0, 0.18),
+    0 0 20px rgba(255, 215, 0, 0.16);
+}
+
+.tier-pill.tested.t1 img {
+  filter:
+    drop-shadow(0 0 10px rgba(255, 215, 0, 0.45))
+    brightness(1.22);
+}
+
+/* HT is a little more golden/brighter than LT */
+.tier-pill.ht.tested span {
+  background: linear-gradient(180deg, rgba(255, 215, 0, 0.58), rgba(156, 91, 18, 0.82));
+  color: #ffe66d;
+}
+
+.tier-pill.lt.tested span {
+  background: linear-gradient(180deg, rgba(181, 117, 42, 0.42), rgba(83, 58, 36, 0.78));
+  color: #f0d2a1;
+}
+
+/* NT stays grey */
+.tier-pill.nt,
+.tier-pill.not-tested {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(11, 21, 38, 0.92);
+  box-shadow: none;
+}
+
+.tier-pill.nt img,
+.tier-pill.not-tested img {
+  filter: none;
+}
