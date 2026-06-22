@@ -1,5 +1,5 @@
-const MODE_ORDER = ['overall', 'nethpot', 'crystal', 'mace', 'uhc', 'axe', 'smp'];
-const PLAY_MODES = ['nethpot', 'crystal', 'mace', 'uhc', 'axe', 'smp'];
+const MODE_ORDER = ['overall', 'nethpot', 'crystal', 'mace', 'uhc', 'sword', 'smp'];
+const PLAY_MODES = ['nethpot', 'crystal', 'mace', 'uhc', 'sword', 'smp'];
 
 const GAMEMODES = {
   overall: { name: 'Overall', icon: '/assets/icons/overall.svg' },
@@ -7,7 +7,7 @@ const GAMEMODES = {
   crystal: { name: 'Crystal', icon: '/assets/icons/crystal.svg' },
   mace: { name: 'Mace', icon: '/assets/icons/mace.svg' },
   uhc: { name: 'UHC', icon: '/assets/icons/uhc.svg' },
-  axe: { name: 'Axe', icon: '/assets/icons/axe.svg' },
+  sword: { name: 'Sword', icon: '/assets/icons/sword.svg' },
   smp: { name: 'SMP', icon: '/assets/icons/smp.svg' },
 };
 
