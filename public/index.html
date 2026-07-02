@@ -1,1 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>ZeusPvP Tierlist | 1.8+ Minecraft Server</title>
+
+  <!-- Browser tab logo -->
+  <link rel="icon" type="image/png" href="/assets/img/zeus-logo.png" />
+  <link rel="shortcut icon" type="image/png" href="/assets/img/zeus-logo.png" />
+  <link rel="apple-touch-icon" href="/assets/img/zeus-logo.png" />
+
+  <!-- Discord / social embed -->
+  <meta name="description" content="Zeus PvP is a 1.8+ PvP server with an Elo system, clean tier testing, competitive queues, and official rankings. Join the server at zeuspvp.net and get tested to earn your place." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ZeusPvP Tierlist | 1.8+ Minecraft Server" />
+  <meta property="og:description" content="Zeus PvP is a 1.8+ PvP server with an Elo system, clean tier testing, competitive queues, and official rankings. Join the server at zeuspvp.net and get tested to earn your place. Get Tier Tested." />
+  <meta property="og:site_name" content="ZeusPvP Tierlist" />
+
+  <!-- No og:image because you said you do not want logo/image in the link embed -->
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="ZeusPvP Tierlist | 1.8+ Minecraft Server" />
+  <meta name="twitter:description" content="Zeus PvP is a 1.8+ PvP server with an Elo system, clean tier testing, competitive queues, and official rankings. Join the server at zeuspvp.net and get tested to earn your place. Get Tier Tested." />
+
+  <meta name="theme-color" content="#FFD700" />
+
+  <link rel="preconnect" href="https://render.crafty.gg" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="intro" id="intro">
+    <span class="particle p1"></span>
+    <span class="particle p2"></span>
+    <span class="particle p3"></span>
+    <span class="particle p4"></span>
+    <span class="particle p5"></span>
+
+    <div class="intro-core">
+      <img class="intro-logo" src="/assets/img/zeus-logo.png" alt="ZeusPvP" />
+      <div class="intro-dots">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-bg"></div>
+
+  <div class="site-clouds">
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+  </div>
+
+  <div class="site-fade"></div>
+
+  <header class="topbar reveal-block">
+    <a class="brand" href="#home" data-go="home">
+      <img src="/assets/img/zeus-logo.png" alt="ZeusPvP Logo" />
+    </a>
+
+    <nav class="nav-links">
+      <a href="#home" class="nav-link active" data-go="home">
+        <span class="nav-icon">⌂</span>
+        <span>Home</span>
+      </a>
+
+      <a href="#overall" class="nav-link" data-go="overall">
+        <img src="/assets/icons/overall.svg" alt="Overall" />
+        <span>Rankings</span>
+      </a>
+
+      <a href="https://discord.gg/zeuspvp" target="_blank" class="nav-link">
+        <img src="/assets/icons/discord.svg" alt="Discord" />
+        <span>Discord</span>
+      </a>
+
+      <button class="nav-link nav-button" id="docsBtn">
+        <span class="nav-icon">▧</span>
+        <span>API Docs</span>
+      </button>
+    </nav>
+
+    <div class="top-actions">
+      <div class="top-ip-box">
+        <div>
+          <small>SERVER IP</small>
+          <strong>zeuspvp.net</strong>
+        </div>
+
+        <button class="copy-ip" id="copyIpBtn" title="Copy server IP">⧉</button>
+      </div>
+
+      <div class="search-wrap">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Search player..." autocomplete="off" />
+        <kbd>/</kbd>
+        <div id="searchResults" class="search-results"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="tabs reveal-block hidden" id="tabs"></section>
+
+    <section class="panel reveal-block home-panel" id="panel">
+      <div class="panel-top hidden" id="panelTop">
+        <div class="panel-title" id="panelTitle">
+          <img src="/assets/icons/overall.svg" alt="" />
+
+          <div>
+            <h2>Overall Rankings</h2>
+            <p>Top 100 players by total points</p>
+          </div>
+        </div>
+
+        <div class="server-card">
+          <button id="infoBtn" class="info-btn">ⓘ Information</button>
+
+          <div class="server-main">
+            <img src="/assets/img/zeus-logo.png" alt="ZeusPvP" />
+
+            <div>
+              <small>SERVER IP</small>
+              <strong>zeuspvp.net</strong>
+            </div>
+          </div>
+
+          <a href="https://discord.gg/zeuspvp" target="_blank" class="discord-pill">
+            <img src="/assets/icons/discord.svg" alt="Discord" />
+          </a>
+        </div>
+      </div>
+
+      <div class="data-loader" id="dataLoader">
+        <div class="loader-orb"></div>
+      </div>
+
+      <div id="content" class="content"></div>
+
+      <footer class="footer">
+        <span>ZeusPvP Tierlist</span>
+      </footer>
+    </section>
+  </main>
+
+  <div class="profile-overlay" id="profileOverlay">
+    <article class="profile-card" id="profileCard" role="dialog" aria-modal="true">
+      <button class="profile-close" id="profileClose">×</button>
+
+      <div class="profile-loader" id="profileLoader">
+        <div class="loader-orb small"></div>
+      </div>
+
+      <div class="profile-content" id="profileContent">
+        <div class="profile-hero">
+          <img class="profile-avatar" id="profileAvatar" alt="Player skin" />
+
+          <div class="profile-info-block">
+            <h2 id="profileName">Player</h2>
+
+            <div class="profile-rank">
+              <img id="profileRankIcon" src="/assets/ranks/rookie.svg" alt="" />
+              <span id="profileRank">Rookie</span>
+            </div>
+
+            <div class="profile-region" id="profileRegion">ASIA</div>
+
+            <a class="namemc" id="namemc" target="_blank">
+              <img src="/assets/icons/namemc.png" alt="NameMC" />
+              <span>NameMC ↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-block">
+            <div class="profile-section-title">POSITION</div>
+            <div class="position-card" id="profilePosition">Unranked</div>
+          </div>
+
+          <div class="profile-block profile-tiers-block">
+            <div class="profile-section-title">TIERS</div>
+            <div class="profile-tiers" id="profileTiers"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="context-menu" id="contextMenu">
+    <button data-action="profile">Profile</button>
+    <button data-action="username">Copy username</button>
+    <button data-action="tiers">Copy tiers</button>
+  </div>
+
+  <div class="docs-modal" id="docsModal">
+    <div class="docs-card">
+      <button id="docsClose">×</button>
+
+      <h2>ZeusPvP API Docs</h2>
+      <p>Use these endpoints for your frontend, bot, or other tools.</p>
+
+      <pre>/api/status
+/api/rankings?gamemode=overall&limit=100
+/api/rankings?gamemode=nethpot
+/api/player/:ign
+/api/search?q=IGN</pre>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
 
